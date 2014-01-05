@@ -5,6 +5,7 @@ using System.Text;
 using System.ComponentModel;
 using System.Data;
 using System.IO;
+using System.Reflection;
 
 namespace projectBaseline
 {
@@ -222,6 +223,25 @@ namespace projectBaseline
                     Data.Rows.Add(row);
                 }
             }
+        }
+
+        public List<T> GetTypedDate<T>()
+        {
+            var list = new List<T>();
+            FieldInfo[] fields = typeof(T).GetFields();
+            foreach (DataRow row in Data.Rows)
+            {
+                T rowT = (T)Activator.CreateInstance(typeof(T));
+
+                for (int i = 0; i < row.ItemArray.Length; i++)
+                {
+                    fields[i].SetValue(rowT, row[i]);
+                }
+                list.Add(rowT);
+            }
+
+            return list;
+
         }
 
         private string Escape(string line)
