@@ -7,7 +7,7 @@ using System.Data;
 using System.IO;
 using System.Reflection;
 
-namespace projectBaseline
+namespace DataCollectionUtility
 {
     public class DataFileSchema
     {
