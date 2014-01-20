@@ -35,7 +35,7 @@ namespace Dashboard
             settings.DataEscapeChar = '$'; //fix this
             settings.DataFilePath = @"C:\Users\Shahab\Documents\Cockpit\Baseline\code\web\data\output\workLog.txt";
             settings.DataHasHeader = true;
-            settings.DataSchema = "Date:DateTime,Start:DateTime,End:DateTime,Duration:int";
+            settings.DataSchema = "Date:DateTime,Start:DateTime,End:DateTime,Duration:DateTime";
             var workLog = new DataFileReader(settings).GetTypedDate<DataCollectionUtility.OutputTypes.TimeLog>();
 
             LineChart chart;
@@ -50,11 +50,39 @@ namespace Dashboard
             chart.YMax = TimeSpan.FromHours(22);
             chart.YLabel = "Work End";
 
-            chart = new LineChart(workDurGrid, workLog.Select(l => new Tuple<DateTime, TimeSpan>(l.Date, new TimeSpan(0, l.Duration, 0))));
+            chart = new LineChart(workDurGrid, workLog.Select(l => new Tuple<DateTime, TimeSpan>(l.Date, l.Duration.TimeOfDay)));
             chart.YMin = TimeSpan.FromHours(6);
             chart.YMax = TimeSpan.FromHours(11);
             chart.YLabel = "Hours Worked";
             chart.IsTimeDuration = true;
+
+
+            settings = new DataFileSettings();
+            settings.DataDelimiter = '\t';
+            settings.DataEscapeChar = '$'; //fix this
+            settings.DataFilePath = @"C:\Users\Shahab\Documents\Cockpit\Baseline\code\web\data\output\sleepLog.txt";
+            settings.DataHasHeader = true;
+            settings.DataSchema = "Date:DateTime,Start:DateTime,End:DateTime,Duration:DateTime";
+            var sleepLog = new DataFileReader(settings).GetTypedDate<DataCollectionUtility.OutputTypes.TimeLog>();
+
+
+            chart = new LineChart(sleepStartGrid, sleepLog.Select(l => new Tuple<DateTime, TimeSpan>(l.Date, 
+                (l.Start.Hour < 6 ? l.Start.TimeOfDay + TimeSpan.FromDays(1) : l.Start.TimeOfDay))));
+            chart.YMin = TimeSpan.FromHours(23);
+            chart.YMax = TimeSpan.FromHours(4+24);
+            chart.YLabel = "Sleep Start";
+
+            chart = new LineChart(sleepEndGrid, sleepLog.Select(l => new Tuple<DateTime, TimeSpan>(l.Date, l.End.TimeOfDay)));
+            chart.YMin = TimeSpan.FromHours(8);
+            chart.YMax = TimeSpan.FromHours(13);
+            chart.YLabel = "Sleep End";
+
+            chart = new LineChart(sleepDurGrid, sleepLog.Select(l => new Tuple<DateTime, TimeSpan>(l.Date, l.Duration.TimeOfDay)));
+            chart.YMin = TimeSpan.FromHours(6);
+            chart.YMax = TimeSpan.FromHours(11);
+            chart.YLabel = "Hours Slept";
+            chart.IsTimeDuration = true;
+
         }
     }
 }

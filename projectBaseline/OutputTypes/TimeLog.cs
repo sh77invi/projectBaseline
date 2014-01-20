@@ -10,7 +10,8 @@ namespace DataCollectionUtility.OutputTypes
         public DateTime Date;
         public DateTime Start;
         public DateTime End;
-        public int Duration;
+        public DateTime Duration;
+//        public int Duration;
 //        public TimeSpan Duration;
     }
 }

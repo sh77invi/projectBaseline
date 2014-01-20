@@ -212,7 +212,8 @@ namespace DataCollectionUtility
                             }
                             else
                             {
-                                row[col] = DBNull.Value;
+                                //row[col] = DBNull.Value;
+                                row[col] = string.Empty;
                             }
                         }
                         else

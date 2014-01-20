@@ -45,6 +45,7 @@
   <ItemGroup>
     <Compile Include="InputTypes\Chronus.cs" />
     <Compile Include="FileReaderUtility.cs" />
+    <Compile Include="InputTypes\Toggl.cs" />
     <Compile Include="OutputTypes\TimeLog.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

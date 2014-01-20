@@ -154,7 +154,7 @@ namespace Dashboard
             if (dt.DayOfWeek == DayOfWeek.Monday)
             {
                 //return "Mon(" + dt.ToString("MM/dd") + ")";
-                return "Mo(" + dt.ToString("MM/dd") + ")";
+                return "Mo(" + dt.ToString("M/d") + ")";
             }
             else
             {
