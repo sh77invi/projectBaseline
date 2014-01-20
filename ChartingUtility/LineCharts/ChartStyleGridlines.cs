@@ -28,6 +28,8 @@ namespace ChartingUtility.LineCharts
             title = "Title";
             xLabel = "X Axis";
             yLabel = "Y Axis";
+            XTickFormatter = null;
+            YTickFormatter = null;
         }
 
         public string Title
@@ -90,6 +92,9 @@ namespace ChartingUtility.LineCharts
             set { isYGrid = value; }
         }
 
+        public Func<double,string> XTickFormatter { get; set; }
+        public Func<double, string> YTickFormatter { get; set; }
+
         public void AddChartStyle(TextBlock tbTitle, TextBlock tbXLabel, TextBlock tbYLabel)
         {
             Point pt = new Point();
@@ -109,7 +114,7 @@ namespace ChartingUtility.LineCharts
             {
                 pt = NormalizePoint(new Point(Xmin, dy));
                 tb = new TextBlock();
-                tb.Text = dy.ToString();
+                tb.Text = YTickFormatter != null ? YTickFormatter(dy) : dy.ToString();
                 tb.TextAlignment = TextAlignment.Right;
                 tb.Measure(new Size(Double.PositiveInfinity, Double.PositiveInfinity));
                 size = tb.DesiredSize;
@@ -169,9 +174,8 @@ namespace ChartingUtility.LineCharts
                 tick.X2 = pt.X;
                 tick.Y2 = pt.Y - 5;
                 ChartCanvas.Children.Add(tick);
-
                 tb = new TextBlock();
-                tb.Text = dx.ToString();
+                tb.Text = XTickFormatter != null ? XTickFormatter(dx) : dy.ToString();
                 tb.Measure(new Size(Double.PositiveInfinity, Double.PositiveInfinity));
                 size = tb.DesiredSize;
                 TextCanvas.Children.Add(tb);
@@ -190,13 +194,21 @@ namespace ChartingUtility.LineCharts
                 tick.X2 = pt.X + 5;
                 tick.Y2 = pt.Y;
                 ChartCanvas.Children.Add(tick);
-
                 tb = new TextBlock();
-                tb.Text = dy.ToString();
+                tb.Text = YTickFormatter != null ? YTickFormatter(dy) : dy.ToString();
                 tb.Measure(new Size(Double.PositiveInfinity, Double.PositiveInfinity));
                 size = tb.DesiredSize;
                 TextCanvas.Children.Add(tb);
-                Canvas.SetRight(tb, ChartCanvas.Width + 10);
+                //Canvas.SetRight(tb, ChartCanvas.Width + 10);
+                //tb.TextAlignment = TextAlignment.Right;
+                var l = Canvas.GetLeft(ChartCanvas);
+                var r = Canvas.GetRight(ChartCanvas);
+                var b = Canvas.GetBottom(ChartCanvas);
+                var t = Canvas.GetTop(ChartCanvas);
+                var w = ChartCanvas.Width;
+                var h = ChartCanvas.Height;
+
+                Canvas.SetRight(tb, TextCanvas.Width - Canvas.GetLeft(ChartCanvas) + 5);
                 Canvas.SetTop(tb, pt.Y);
             }
 

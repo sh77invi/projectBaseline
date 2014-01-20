@@ -21,7 +21,8 @@ namespace Dashboard
     /// </summary>
     public partial class MainWindow : Window
     {
-        private ChartStyle cs;
+        private ChartStyleGridlines cs;
+        //private ChartStyle cs;
         private DataCollection dc;
         private DataSeries ds;
 
@@ -37,27 +38,23 @@ namespace Dashboard
             settings.DataSchema = "Date:DateTime,Start:DateTime,End:DateTime,Duration:int";
             var workLog = new DataFileReader(settings).GetTypedDate<DataCollectionUtility.OutputTypes.TimeLog>();
 
+            LineChart chart;
 
-            cs = new ChartStyle();
-            cs.ChartCanvas = chartCanvas;
-            dc = new DataCollection();
-            cs.Xmin = workLog.Select(l => l.Date.Ticks).Min();
-            cs.Xmax = workLog.Select(l => l.Date.Ticks).Max();
-            cs.Ymin = 9 * 60;
-            cs.Ymax = 14 * 60;
+            chart = new LineChart(workStartGrid, workLog.Select(l => new Tuple<DateTime, TimeSpan>(l.Date, l.Start.TimeOfDay)));
+            chart.YMin = TimeSpan.FromHours(9);
+            chart.YMax = TimeSpan.FromHours(14);
+            chart.YLabel = "Work Start";
 
-            // Draw Sine curve:
-            ds = new DataSeries();
-            ds.LineColor = Brushes.Blue;
-            ds.LineThickness = 2;
-            workLog.ForEach(l => ds.LineSeries.Points.Add(new Point(l.Date.Ticks, l.Start.Hour * 60 + l.Start.Minute)));
+            chart = new LineChart(workEndGrid, workLog.Select(l => new Tuple<DateTime, TimeSpan>(l.Date, l.End.TimeOfDay)));
+            chart.YMin = TimeSpan.FromHours(18);
+            chart.YMax = TimeSpan.FromHours(22);
+            chart.YLabel = "Work End";
 
-            dc.DataList.Add(ds);
-            dc.AddLines(cs);
-        }
-
-        private void chartGrid_SizeChanged(object sender, SizeChangedEventArgs e)
-        {
+            chart = new LineChart(workDurGrid, workLog.Select(l => new Tuple<DateTime, TimeSpan>(l.Date, new TimeSpan(0, l.Duration, 0))));
+            chart.YMin = TimeSpan.FromHours(6);
+            chart.YMax = TimeSpan.FromHours(11);
+            chart.YLabel = "Hours Worked";
+            chart.IsTimeDuration = true;
         }
     }
 }
